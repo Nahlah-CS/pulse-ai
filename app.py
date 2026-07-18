@@ -13,7 +13,9 @@ st.markdown("""
     .main { background-color: #f4f7f5; }
     .stButton>button { background-color: #1b4d3e; color: white; border-radius: 8px; border: 1px solid #d4af37; font-weight: bold; width: 100%; }
     .stButton>button:hover { background-color: #d4af37; color: #1b4d3e; }
-    .metric-card { background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #1b4d3e; text-align: center; }
+    .metric-card { background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 5px solid #1b4d3e; text-align: center; margin-bottom: 10px; }
+    .metric-card h4 { color: #1b4d3e !important; margin: 0; padding: 0; font-size: 16px; }
+    .metric-card h2 { color: #d4af37 !important; margin: 10px 0 0 0; padding: 0; font-size: 28px; font-weight: bold; }
     .security-notice { background-color: #ffebee; color: #c62828; padding: 10px; border-radius: 5px; font-weight: bold; text-align: center; }
     </style>
 """, unsafe_allow_html=True)
@@ -41,7 +43,7 @@ if not st.session_state['logged_in']:
             st.error("بيانات الدخول غير صحيحة! (استخدم admin و hr2026 للتجربة)")
     st.stop()
 
-# 3. القاموس
+# 3. القاموس لتدعيم اللغات
 text = {
     "ar": {
         "title": "📊 Pulse AI - محلل نبض الموظفين الذكي",
@@ -100,7 +102,7 @@ with st.sidebar:
         st.session_state['logged_in'] = False
         st.rerun()
 
-# 4. البيانات
+# 4. البيانات التجريبية
 mock_data_ar = pd.DataFrame({
     'القسم': ['التقنية', 'العمليات', 'المبيعات', 'التقنية', 'الموارد البشرية'],
     'التقييم': [2, 4, 5, 3, 4],
@@ -122,8 +124,19 @@ if page == text[lang]["home"]:
     st.title(text[lang]["title"])
     st.subheader(text[lang]["subtitle"])
     st.markdown("---")
+    
+    # تحسين تشغيل الصوت محلياً لتفادي مشاكل الروابط الخارجية
     st.write("🎵 **مؤثر صوتي ترحيبي للنظام (Welcome Chime):**")
-    st.audio("https://www.soundjay.com/buttons/sounds/button-09a.mp3", format="audio/mp3")
+    try:
+        welcome_tts = gTTS(text="Welcome to Pulse AI" if lang == "en" else "مرحباً بكم في منصة نبض", lang='en' if lang == 'en' else 'ar')
+        sound_fp = io.BytesIO()
+        welcome_tts.write_to_fp(sound_fp)
+        sound_fp.seek(0)
+        st.audio(sound_fp, format="audio/mp3")
+    except:
+        st.audio("https://www.soundjay.com/buttons/sounds/button-09a.mp3", format="audio/mp3")
+        
+    st.markdown("<br>", unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
