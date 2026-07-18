@@ -10,13 +10,24 @@ st.set_page_config(page_title="Pulse AI", page_icon="📊", layout="wide")
 
 st.markdown("""
     <style>
-    .main { background-color: #f4f7f5; }
-    .stButton>button { background-color: #1b4d3e; color: white; border-radius: 8px; border: 1px solid #d4af37; font-weight: bold; width: 100%; }
-    .stButton>button:hover { background-color: #d4af37; color: #1b4d3e; }
-    .metric-card { background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 5px solid #1b4d3e; text-align: center; margin-bottom: 10px; }
-    .metric-card h4 { color: #1b4d3e !important; margin: 0; padding: 0; font-size: 16px; }
-    .metric-card h2 { color: #d4af37 !important; margin: 10px 0 0 0; padding: 0; font-size: 28px; font-weight: bold; }
-    .security-notice { background-color: #ffebee; color: #c62828; padding: 10px; border-radius: 5px; font-weight: bold; text-align: center; }
+    /* تغيير خلفية التطبيق بالكامل للون الأسود */
+    .stApp { background-color: #000000; color: #ffffff; }
+    .main { background-color: #000000; }
+    
+    /* الأزرار باللون الأخضر الأساسي للباليت */
+    .stButton>button { background-color: #84B179; color: #000000; border-radius: 8px; border: 1px solid #A2CB8B; font-weight: bold; width: 100%; }
+    .stButton>button:hover { background-color: #A2CB8B; color: #000000; }
+    
+    /* بطاقات المؤشرات متناسقة مع المظهر الداكن والباليت */
+    .metric-card { background-color: #111111; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(255,255,255,0.05); border-left: 5px solid #84B179; text-align: center; margin-bottom: 10px; border-top: 1px solid #222222; border-right: 1px solid #222222; border-bottom: 1px solid #222222; }
+    .metric-card h4 { color: #C7EABB !important; margin: 0; padding: 0; font-size: 16px; }
+    .metric-card h2 { color: #E8F5BD !important; margin: 10px 0 0 0; padding: 0; font-size: 28px; font-weight: bold; }
+    
+    /* تنبيه الأمان */
+    .security-notice { background-color: #2c0d11; color: #ff8a80; padding: 10px; border-radius: 5px; font-weight: bold; text-align: center; border: 1px solid #d32f2f; }
+    
+    /* تعديل نصوص القائمة الجانبية لتناسب الخلفية الداكنة */
+    .css-17eq0hr, .stRadio, label { color: #ffffff !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -125,7 +136,6 @@ if page == text[lang]["home"]:
     st.subheader(text[lang]["subtitle"])
     st.markdown("---")
     
-    # تحسين تشغيل الصوت محلياً لتفادي مشاكل الروابط الخارجية
     st.write("🎵 **مؤثر صوتي ترحيبي للنظام (Welcome Chime):**")
     try:
         welcome_tts = gTTS(text="Welcome to Pulse AI" if lang == "en" else "مرحباً بكم في منصة نبض", lang='en' if lang == 'en' else 'ar')
@@ -154,10 +164,13 @@ elif page == text[lang]["analysis"]:
         st.dataframe(df, use_container_width=True)
         col1, col2 = st.columns(2)
         with col1:
-            fig1 = px.bar(df, x=df.columns[0], y=df.columns[1], title=text[lang]["chart_title1"], color=df.columns[0], color_discrete_sequence=px.colors.qualitative.Dark2)
+            # رسوم بيانية مخصصة تتماشى مع ألوان الباليت المحدثة والخلفية الداكنة
+            fig1 = px.bar(df, x=df.columns[0], y=df.columns[1], title=text[lang]["chart_title1"], color=df.columns[0], color_discrete_sequence=['#84B179', '#A2CB8B', '#C7EABB', '#E8F5BD'])
+            fig1.update_layout(template="plotly_dark", paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
             st.plotly_chart(fig1, use_container_width=True)
         with col2:
-            fig2 = px.pie(df, names=df.columns[3], title=text[lang]["chart_title2"], color_discrete_sequence=['#2e7d32', '#c62828', '#757575'])
+            fig2 = px.pie(df, names=df.columns[3], title=text[lang]["chart_title2"], color_discrete_sequence=['#84B179', '#e57373', '#757575'])
+            fig2.update_layout(template="plotly_dark", paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
             st.plotly_chart(fig2, use_container_width=True)
 
 elif page == text[lang]["advisor"]:
